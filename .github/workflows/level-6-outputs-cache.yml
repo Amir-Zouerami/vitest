@@ -11,8 +11,8 @@ on:
         paths-ignore: '.github/workflows/*'
 
 env:
-    DB_USERNAME: root-user
-    DB_PASSWORD: root-password
+    DB_USERNAME: ${{ secrets.DB_USERNAME }}
+    DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
 jobs:
     display-the-env:
@@ -34,5 +34,5 @@ jobs:
             - name: run test.js
               run: node test.js
 
-            - name: access ENV straight from action
+            - name: access ENV secrets straight from action
               run: echo ${{ env.DB_USERNAME }} ${{ env.DB_PASSWORD }}
