@@ -16,7 +16,24 @@ on:
         paths-ignore: '.github/workflows/*'
 
 jobs:
+    lint-and-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout source code
+              uses: actions/checkout@v4
+
+            - name: install dependencies
+              run: npm ci
+
+            - name: lint
+              run: npm run lint
+
+            - name: test
+              run: npm run test
+
     build:
+        needs: lint-and-test
         runs-on: ubuntu-latest
         outputs:
             script-file: ${{ steps.publish.outputs.script-file }}
@@ -31,10 +48,10 @@ jobs:
               uses: actions/checkout@v4
 
             - name: install dependencies
-              run: 'npm i'
+              run: npm ci
 
             - name: build the project
-              run: 'npm run build'
+              run: npm run build
 
             - name: Publish the JS file name
               id: publish
