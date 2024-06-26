@@ -66,4 +66,4 @@ jobs:
             - name: Output The Context
               run: |
                   echo "Something Went Wrong..."
-                  echo ${{ github }}
+                  echo ${{ toJson(github) }}
