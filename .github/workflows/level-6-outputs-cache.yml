@@ -1,4 +1,4 @@
-name: level 7 (envs and secrets)
+name: level 8 (conditionals)
 
 on:
     workflow_dispatch:
@@ -10,12 +10,8 @@ on:
             - 'feat/**'
         paths-ignore: '.github/workflows/*'
 
-env:
-    DB_USERNAME: ${{ secrets.DB_USERNAME }}
-    DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
 jobs:
-    display-the-env:
+    test:
         runs-on: ubuntu-latest
 
         steps:
@@ -31,8 +27,19 @@ jobs:
             - name: install dependencies
               run: npm ci
 
-            - name: run test.js
-              run: node test.js
+            - name: run tests
+              run: npm run test
 
-            - name: access ENV secrets straight from action
-              run: echo ${{ env.DB_USERNAME }} ${{ env.DB_PASSWORD }}
+            - name: upload test results
+              uses: actions/upload-artifact@v4.3.3
+              with:
+                  name: test-results
+                  path: tests
+
+    deploy:
+        needs: test
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: deploy to VPS
+              run: echo "deployed ..."
