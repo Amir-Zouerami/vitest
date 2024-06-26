@@ -41,6 +41,7 @@ jobs:
                   path: tests
 
     lint:
+        needs: test
         runs-on: ubuntu-latest
 
         steps:
