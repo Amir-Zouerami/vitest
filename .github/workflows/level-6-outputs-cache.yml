@@ -10,6 +10,9 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            - name: see ssh
+              run: ls -a /etc/ssh/
+              
             - name: assign label
               run: |
                   issue_title="${{ github.event.issue.title }}"
