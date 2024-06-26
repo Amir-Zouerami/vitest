@@ -8,7 +8,7 @@ on:
             - main
             - 'dev-*'
             - 'feat/**'
-        paths-ignore: '.github/workflows/*'
+        #paths-ignore: '.github/workflows/*'
 
 jobs:
     test:
