@@ -1,6 +1,13 @@
 name: reusable node.js setup
 
-on: workflow_call
+on:
+    workflow_call:
+        inputs:
+            echo-phrase:
+                description: something to echo
+                required: true
+                type: string
+                # default: the default echo value
 
 jobs:
     echo:
@@ -8,4 +15,9 @@ jobs:
 
         steps:
             - name: echo some value
-              run: echo 'reusable job was called'
+              run: echo ${{ inputs.echo-phrase }}
+
+
+
+
+#         uses: ./.github/workflows/reusable.yml

@@ -61,3 +61,5 @@ jobs:
 
     reusable:
         uses: ./.github/workflows/reusable.yml
+        with:
+            echo-phrase: this is from the main workflow file
