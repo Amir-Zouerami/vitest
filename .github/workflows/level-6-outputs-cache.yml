@@ -1,12 +1,7 @@
-name: level-6 job outputs & cache
+name: level 7 (envs and secrets)
 
 on:
     workflow_dispatch:
-
-    pull_request:
-        types: [opened, edited]
-        branches:
-            - main
 
     push:
         branches:
@@ -15,8 +10,12 @@ on:
             - 'feat/**'
         paths-ignore: '.github/workflows/*'
 
+env:
+    DB_USERNAME: root-user
+    DB_PASSWORD: root-password
+
 jobs:
-    lint-and-test:
+    display-the-env:
         runs-on: ubuntu-latest
 
         steps:
@@ -32,45 +31,5 @@ jobs:
             - name: install dependencies
               run: npm ci
 
-            - name: lint
-              run: npm run lint
-
-            - name: test
-              run: npm run test
-
-    build:
-        needs: lint-and-test
-        runs-on: ubuntu-latest
-        outputs:
-            script-file: ${{ steps.publish.outputs.script-file }}
-
-        steps:
-            - name: checkout source code
-              uses: actions/checkout@v4
-
-            - name: cache dependencies
-              uses: actions/cache@v4
-              with:
-                  path: ~/.npm
-                  key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-            - name: install dependencies
-              run: npm ci
-
-            - name: build the project
-              run: npm run build
-
-            - name: Publish the JS file name
-              id: publish
-              run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
-
-    deploy:
-        needs: build
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Output the JS file name
-              run: echo "${{ needs.build.outputs.script-file }}"
-
-            - name: deploy to VPS
-              run: echo "deployed ..."
+            - name: run test.js
+              run: node test.js
