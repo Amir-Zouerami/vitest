@@ -30,6 +30,9 @@ jobs:
             - name: checkout source code
               uses: actions/checkout@v4
 
+            - name: install dependencies
+              run: 'npm i'
+
             - name: build the project
               run: 'npm run build'
 
