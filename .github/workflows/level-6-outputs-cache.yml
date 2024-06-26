@@ -10,14 +10,12 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: see ssh
-              run: ls -a /etc/ssh/
-              
             - name: assign label
+              if: contains(github.event.issue.title, 'bug')
               run: |
-                  issue_title="${{ github.event.issue.title }}"
-                  if [[ "$issue_title" == *"bug"* ]]; then
-                  echo "Issue is a bug!"
-                  else
-                  echo "Issue is not about a bug"
-                  fi
+                  curl -X POST \
+                  --url https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels \
+                  -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+                  -H 'content-type: application/json' \
+                  -d '{ "labels" : ["bug"] }' \
+                  --fail
