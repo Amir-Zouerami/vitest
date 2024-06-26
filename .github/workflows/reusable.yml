@@ -1,0 +1,11 @@
+name: reusable node.js setup
+
+on: workflow_call
+
+jobs:
+    echo:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: echo some value
+              run: echo 'reusable job was called'

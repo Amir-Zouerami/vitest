@@ -58,3 +58,6 @@ jobs:
               with:
                   name: test-results
                   path: tests
+
+    reusable:
+        uses: ./.github/workflows/reusable.yml
