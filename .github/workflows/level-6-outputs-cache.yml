@@ -18,6 +18,14 @@ jobs:
                 node-version: [12, 20, 22]
                 operating-systems: [ubuntu-latest, windows-latest]
 
+                include:
+                    - node-version: 18
+                      operating-systems: ubuntu-latest
+
+                exclude:
+                    - node-version: 12
+                      operating-systems: windows-latest
+
         runs-on: ${{ matrix.operating-systems }}
 
         steps:
