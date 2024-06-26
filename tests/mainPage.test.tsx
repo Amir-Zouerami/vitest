@@ -6,6 +6,6 @@ import { render, screen } from '@testing-library/react';
 describe('IncreaseButton', () => {
     test('renders the correct greeting', () => {
         render(<App />);
-        expect(screen.getByText('Vite + React')).to.exist;
+        expect(screen.getByText('Vite + React')).to.not.exist;
     });
 });
