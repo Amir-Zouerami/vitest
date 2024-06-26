@@ -38,10 +38,12 @@ jobs:
                   name: test-results
                   path: tests
 
-    deploy:
-        needs: test
+    report:
+        if: failure()
         runs-on: ubuntu-latest
 
         steps:
-            - name: deploy to VPS
-              run: echo "deployed ..."
+            - name: Output The Context
+              run: |
+                  echo "Something Went Wrong..."
+                  echo ${{ github }}
