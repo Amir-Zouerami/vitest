@@ -1,0 +1,55 @@
+name: level-6 job outputs & cache
+
+on:
+    workflow_dispatch:
+
+    pull_request:
+        types: [opened, edited]
+        branches:
+            - main
+
+    push:
+        branches:
+            - main
+            - 'dev-*'
+            - 'feat/**'
+        paths-ignore: '.github/workflows/*'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        outputs:
+            script-file: ${{ steps.publish.outputs.script-file }}
+
+        steps:
+            - name: Setup Node.js environment
+              uses: actions/setup-node@v4.0.2
+              with:
+                  node-version: 22
+
+            - name: checkout source code
+              uses: actions/checkout@v4
+
+            - name: build the project
+              run: 'npm run build'
+
+            - name: Publish the JS file name
+              id: publish
+              run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
+
+            - name: Upload Test Coverage Artifact
+              uses: actions/upload-artifact@v4.3.3
+              with:
+                  name: coverage-report
+                  path: tests
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Output the JS file name
+              run: echo "${{ needs.build.outputs.script-file }}"
+
+            - name: deploy to VPS
+              run: echo "deployed ..."
