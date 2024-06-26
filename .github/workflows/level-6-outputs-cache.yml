@@ -40,12 +40,6 @@ jobs:
               id: publish
               run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
 
-            - name: Upload Test Coverage Artifact
-              uses: actions/upload-artifact@v4.3.3
-              with:
-                  name: coverage-report
-                  path: tests
-
     deploy:
         needs: build
         runs-on: ubuntu-latest
