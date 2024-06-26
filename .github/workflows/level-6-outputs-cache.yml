@@ -64,6 +64,8 @@ jobs:
 
         steps:
             - name: Output The Context
+              env:
+                  G_CONTEXT: ${{ toJson(github) }}
               run: |
                   echo "Something Went Wrong..."
-                  echo ${{ toJson(github) }}
+                  echo $G_CONTEXT
