@@ -1,4 +1,4 @@
-name: level 8 (conditionals)
+name: level 8 (continue on error)
 
 on:
     workflow_dispatch:
@@ -30,11 +30,11 @@ jobs:
               run: npm ci
 
             - name: run tests
+              continue-on-error: true
               id: unit-tests
               run: npm run test
 
             - name: upload test results
-              if: failure() && steps.unit-tests.conclusion == 'failure'
               uses: actions/upload-artifact@v4.3.3
               with:
                   name: test-results
