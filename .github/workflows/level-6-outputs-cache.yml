@@ -11,25 +11,6 @@ on:
         #paths-ignore: '.github/workflows/*'
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: checkout source code
-              uses: actions/checkout@v4
-
-            - name: cache dependencies
-              uses: actions/cache@v4
-              with:
-                  path: ~/.npm
-                  key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-            - name: install dependencies
-              run: npm ci
-
-            - name: lint
-              run: npm run lint
-
     test:
         runs-on: ubuntu-latest
 
@@ -56,6 +37,25 @@ jobs:
               with:
                   name: test-results
                   path: tests
+
+    lint:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout source code
+              uses: actions/checkout@v4
+
+            - name: cache dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ~/.npm
+                  key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+            - name: install dependencies
+              run: npm ci
+
+            - name: lint
+              run: npm run lint
 
     report:
         needs: [lint, test]
