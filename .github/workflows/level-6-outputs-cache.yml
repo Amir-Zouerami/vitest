@@ -1,4 +1,4 @@
-name: level 8 (conditionals)
+name: level 9 (matrix)
 
 on:
     workflow_dispatch:
@@ -12,11 +12,21 @@ on:
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [18, 20, 22]
+                operating-systems: [ubuntu-latest, windows-latest]
+
+        runs-on: ${{ matrix.operating-systems }}
 
         steps:
             - name: checkout source code
               uses: actions/checkout@v4
+
+            - name: setup node environment
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
 
             - name: cache dependencies
               id: cache
@@ -39,36 +49,3 @@ jobs:
               with:
                   name: test-results
                   path: tests
-
-    lint:
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: checkout source code
-              uses: actions/checkout@v4
-
-            - name: cache dependencies
-              id: cache
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-            - name: install dependencies
-              if: steps.cache.outputs.cache-hit != 'true'
-              run: npm ci
-            - name: lint
-              run: npm run lint
-
-    report:
-        needs: [lint, test]
-        if: failure()
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Output The Context
-              env:
-                  G_CONTEXT: ${{ toJson(github) }}
-              run: |
-                  echo "Something Went Wrong..."
-                  echo $G_CONTEXT
