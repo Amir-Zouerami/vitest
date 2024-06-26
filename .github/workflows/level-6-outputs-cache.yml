@@ -33,3 +33,6 @@ jobs:
 
             - name: run test.js
               run: node test.js
+
+            - name: access ENV straight from action
+              run: echo ${{ env.DB_USERNAME }} ${{ env.DB_PASSWORD }}
