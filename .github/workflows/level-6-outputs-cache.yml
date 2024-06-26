@@ -39,6 +39,7 @@ jobs:
                   path: tests
 
     report:
+        needs: test
         if: failure()
         runs-on: ubuntu-latest
 
