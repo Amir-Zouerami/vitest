@@ -1,21 +1,22 @@
-name: script injection
+name: test and deploy
 
 on:
-    issues:
-        types:
-            - opened
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-    assign-label:
-        runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: assign label
-              if: contains(github.event.issue.title, 'bug')
-              run: |
-                  curl -X POST \
-                    --url https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels \
-                    -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                    -H "Content-Type: application/json" \
-                    -d '{"labels": ["bug"]}' \
-                    --fail
+    steps:
+      - name: run tests
+        run: echo "tests passed ✅"
+  
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: deploy to VPS
+        run: echo "website up and running ... ✅"
