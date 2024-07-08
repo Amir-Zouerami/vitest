@@ -14,6 +14,7 @@ jobs:
         run: echo "tests passed ✅"
   
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     
     steps:
