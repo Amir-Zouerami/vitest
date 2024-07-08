@@ -1,22 +1,51 @@
-name: test and deploy
+name: level 9 (matrix)
 
 on:
-  push:
-    branches:
-      - main
+    workflow_dispatch:
+
+    push:
+        branches:
+            - main
+            - 'dev-*'
+            - 'feat/**'
+        #paths-ignore: '.github/workflows/*'
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+    test:
+        strategy:
+            matrix:
+                node-version: [18, 20, 22]
+                operating-systems: [ubuntu-latest, windows-latest]
 
-    steps:
-      - name: run tests
-        run: echo "tests passed ✅"
-  
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: deploy to VPS
-        run: echo "website up and running ... ✅"
+        runs-on: ${{ matrix.operating-systems }}
+
+        steps:
+            - name: checkout source code
+              uses: actions/checkout@v4
+
+            - name: setup node environment
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: cache dependencies
+              id: cache
+              uses: actions/cache@v4
+              with:
+                  path: node_modules
+                  key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+            - name: install dependencies
+              if: steps.cache.outputs.cache-hit != 'true'
+              run: npm ci
+
+            - name: run tests
+              id: unit-tests
+              run: npm run test
+
+            - name: upload test results
+              if: failure() && steps.unit-tests.conclusion == 'failure'
+              uses: actions/upload-artifact@v4.3.3
+              with:
+                  name: test-results
+                  path: tests
