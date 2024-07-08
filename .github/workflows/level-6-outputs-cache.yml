@@ -1,22 +1,27 @@
-name: test and deploy
+name: Level-4 (activity types, filters, and protections)
 
 on:
+  pull_request:
+    types: [opened, edited]
+    branches:
+      - main
+  workflow_dispatch:
   push:
     branches:
       - main
+      - 'dev-*'
+      - 'feat/**'
+    # paths:
+    #   - '**.js'
+    #   - '**.md'
+    paths-ignore:
+      '.github/workflows/*'
+
 
 jobs:
-  test:
+  example-job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: run tests
-        run: echo "tests passed ✅"
-  
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: deploy to VPS
-        run: echo "website up and running ... ✅"
+      - name: PR just happened
+        run: echo "A NEW PR WAS JUST OPENED...!"
