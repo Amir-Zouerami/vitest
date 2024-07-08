@@ -1,51 +1,21 @@
-name: level 9 (matrix)
+name: script injection
 
 on:
-    workflow_dispatch:
-
-    push:
-        branches:
-            - main
-            - 'dev-*'
-            - 'feat/**'
-        #paths-ignore: '.github/workflows/*'
+    issues:
+        types:
+            - opened
 
 jobs:
-    test:
-        strategy:
-            matrix:
-                node-version: [18, 20, 22]
-                operating-systems: [ubuntu-latest, windows-latest]
-
-        runs-on: ${{ matrix.operating-systems }}
+    assign-label:
+        runs-on: ubuntu-latest
 
         steps:
-            - name: checkout source code
-              uses: actions/checkout@v4
-
-            - name: setup node environment
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ matrix.node-version }}
-
-            - name: cache dependencies
-              id: cache
-              uses: actions/cache@v4
-              with:
-                  path: node_modules
-                  key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-            - name: install dependencies
-              if: steps.cache.outputs.cache-hit != 'true'
-              run: npm ci
-
-            - name: run tests
-              id: unit-tests
-              run: npm run test
-
-            - name: upload test results
-              if: failure() && steps.unit-tests.conclusion == 'failure'
-              uses: actions/upload-artifact@v4.3.3
-              with:
-                  name: test-results
-                  path: tests
+            - name: assign label
+              if: contains(github.event.issue.title, 'bug')
+              run: |
+                  curl -X POST \
+                    --url https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/labels \
+                    -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                    -H "Content-Type: application/json" \
+                    -d '{"labels": ["bug"]}' \
+                    --fail
